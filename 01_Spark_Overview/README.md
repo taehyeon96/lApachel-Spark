@@ -102,6 +102,7 @@
     - <일반적인 연산> 만약 파티션 내 데이터에 숫자 1을 더하는 연산을 할 경우, 부모 RDD 파티션 -> 자식 RDD 파티션에 각각 +1 수행됨
     - 즉, 같은 RDD 내에 다른 파티션에 영향을 받지않고 각각 +1해줌
   - 다음 그림에서 큰 박스가 RDD, 하늘색 작은 박스가 하나의 파티션임
+  
     <img width="40%" src="https://user-images.githubusercontent.com/61690289/150372489-d0168f1c-57f4-41b3-aa8d-acfa2b48caf6.PNG"/>
 
 
@@ -131,11 +132,75 @@
     - 즉, 두 개의 Real-time과 Batch View를 적절히 조합해야 함
 
 
+---
+## 1.2 Spark Install
+
+- 사용 컴퓨터 성능
+  - OS : Linux (Ubuntu 18.04.6 LST)
+  - processor : Intel i5-11500
+  - RAM : 32.0GB
+
+- Virtualbox 및 ubuntu 설치 (여분의 컴퓨터 필요 시) 
+  - https://spidyweb.tistory.com/212?category=842040
+  - https://sseni.tistory.com/95
+  - OS : Linux (Ubuntu 18.04.6 LST)
+  - RAM : 4096MB
+  - HDD : 24GB
+ 
+- jdk 설치
+  - sudo apt install openjdk-8-jdk -y
+  - java -version; javac -version
+  - 필요 시 폴더 이동
+
+- Spark 설치
+  - 컴퓨터 Ver : spark-3.1.2
+  - Virtualbox Ver : spark-3.2.0
+  - wget https://downloads.apache.org/spark/spark-3.1.2/spark-3.1.2-bin-hadoop2.7.tgz
+  - 압축해제
+    - sudo tar xvf spark-*
+  - 필요 시 폴더 이동
+    - sudo mv spark-3.0.2-bin-hadoop2.7 /apps
+
+- Spark가 잘 설치되었는지 확인 - README 파일의 포함된 단어의 개수 세어보기 예제
+  - cd apps/spark-3.1.2-bin-hadoop2.7
+  - ./bin/run-example JavaWordCount README.md
+  - (설명) run-example : 셸 프로그램, JavaWordCount : 실행할 프로그램 이름(main함수를 갖는 클래스명)
+    - [실행결과]
+    - ~로그 출력 후~
+    - package : 1
+    - For : 3
+    - Programs : 1
+    - ...
+  - "For"라는 단어가 포함된 모든 라인 출력
+  - grep -w -n --color=always "For" README.md
+    - [실행결과]
+    - 32: 문장
+    - 57: 문장
+    - 68: 문장
+
+- **Spark Shell**
+  - 코드 작성 후 빅드한 뒤 스크립트를 이용해 실행하지 않고, 
+  - Linux Shell, Python IDEL 3.0처럼 인터랙티브 방식으로 프로그램을 작성할 수 있는 것
+  - cd apps/spark-3.1.2-bin-hadoop2.7
+  - **Scala**
+    - ./bin/spark-shell
+        <img width="40%" src="https://user-images.githubusercontent.com/61690289/151196895-784242b9-60b4-42c4-80d2-02dc88ed490d.PNG"/>
+  - **PySpark** (Python 설치 필요)
+    - ./bin/pyspark
+  - 셸 종료 방법
+    - Ctrl + D
 
 
-
-
-
-
-
-
+- 로그 설정
+  - cd conf/
+  - cp ./log4j.properties.template log4j.properties
+  - vim log4j.properties
+    - 'i'로 수정 => "log4j.logger.org.apache.spark.repl.Main" -> "log4j.logger.org.apache.spark.repl.Main=INFO" 
+  - cd ..
+  - ./bin/spark-shell
+    - 설정하기 전보다 더 자세히 로그가 출력되어 있음
+  - sc라는 키워드를 통해 스파크 컨텍스트(Spark Context)와 스파크 세션(Spark Session)이라는 인스턴스를 사용 가능
+    - scala> sc
+    - [결과] res0: org.apache.spark.SparkContext = org.apache.spark.SparkContext@2a794780
+    - => sc가 org.apache.spark.Sparkcontext 타입의 인스턴스(=클래스의 객체)를 가리킴을 알 수 있음!(=임의의 변수 res0를 할당!!)
+    
